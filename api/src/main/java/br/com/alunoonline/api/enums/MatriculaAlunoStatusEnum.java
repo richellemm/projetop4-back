@@ -4,7 +4,6 @@ public enum MatriculaAlunoStatusEnum {
     MATRICULADO,
     APROVADO,
     REPROVADO,
-    TRANCADO,
-    TESTE;
+    TRANCADO;
 
 }

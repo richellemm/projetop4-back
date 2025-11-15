@@ -22,6 +22,34 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Autowired
     private UsuarioRepository repository;
 
+    /**
+     * Define quais rotas NÃO passam pelo filtro JWT
+     */
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+
+        String path = request.getServletPath();
+
+        // 🔥 Swagger totalmente liberado
+        if (path.startsWith("/v3/api-docs")
+                || path.startsWith("/swagger-ui")
+                || path.equals("/swagger-ui.html")
+                || path.startsWith("/swagger-resources")
+                || path.startsWith("/webjars")) {
+            return true;
+        }
+
+        // 🔥 Rotas públicas do sistema
+        if (path.equals("/login")
+                || path.startsWith("/alunos")
+                || path.startsWith("/cadastros")) {
+            return true;
+        }
+
+        // ❗ Tudo que não for liberado será filtrado
+        return false;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -48,13 +76,11 @@ public class SecurityFilter extends OncePerRequestFilter {
     }
 
     private String recuperarToken(HttpServletRequest request) {
-        var authorizationHeader = request.getHeader("Authorization");
+        var header = request.getHeader("Authorization");
 
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+        if (header == null || !header.startsWith("Bearer "))
             return null;
-        }
 
-        return authorizationHeader.substring(7);
+        return header.substring(7);
     }
-
 }

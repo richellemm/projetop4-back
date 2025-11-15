@@ -27,37 +27,40 @@ public class SecurityConfigurations {
 
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(sm ->
-                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
                 .authorizeHttpRequests(auth -> auth
+
+                        // 🔥 ROTAS LIBERADAS PARA O SWAGGER
                         .requestMatchers(
+                                "/v3/api-docs/**",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/v3/api-docs"
+                                "/swagger-resources/**",
+                                "/webjars/**"
                         ).permitAll()
 
+                        // 🔥 LOGIN SEM TOKEN
                         .requestMatchers("/login").permitAll()
-                        .requestMatchers("/cadastros/**").permitAll()
 
-                        // LIBERA ALUNOS
-                        .requestMatchers("/alunos").permitAll()
+                        // 🔥 SEUS ENDPOINTS ABERTOS
+                        .requestMatchers("/cadastros/**").permitAll()
                         .requestMatchers("/alunos/**").permitAll()
 
+                        // 🔥 QUALQUER OUTRA ROTA EXIGE JWT
                         .anyRequest().authenticated()
-                                )
+                )
 
-                // 🔥 REGISTRA O FILTRO JWT ANTES DO FILTRO DE AUTENTICAÇÃO
+                // 🔥 REGISTRA O FILTRO JWT ANTES DO FILTRO PADRÃO
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
 
                 .build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
             throws Exception {
-        return configuration.getAuthenticationManager();
+        return config.getAuthenticationManager();
     }
 
     @Bean

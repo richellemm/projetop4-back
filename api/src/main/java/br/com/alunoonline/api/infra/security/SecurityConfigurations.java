@@ -13,26 +13,44 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity // o desenvolvedor vai definir como a segurança vai funcionar.não seguirá o padrão do Spring.
+@EnableWebSecurity
 public class SecurityConfigurations {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
-        return http.csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement((sm -> sm.sessionCreationPolicy
-                        (SessionCreationPolicy.STATELESS)))
+
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(sm ->
+                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .authorizeHttpRequests(auth -> auth
+                        // LIBERA O SWAGGER COMPLETO
+                        .requestMatchers(
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs"
+                        ).permitAll()
+
+                        // LIBERA TAMBÉM SEU LOGIN (se tiver)
+                        .requestMatchers("/login").permitAll()
+
+                        // QUALQUER OUTRA REQUISIÇÃO PRECISA DE AUTENTICAÇÃO
+                        .anyRequest().authenticated()
+                )
                 .build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager (AuthenticationConfiguration configuration) throws
-            Exception{
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
+            throws Exception {
         return configuration.getAuthenticationManager();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

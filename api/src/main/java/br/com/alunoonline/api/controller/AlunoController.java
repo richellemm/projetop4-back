@@ -1,49 +1,75 @@
 package br.com.alunoonline.api.controller;
 
-import br.com.alunoonline.api.model.Aluno;
-import br.com.alunoonline.api.service.AlunoService;
+import br.com.alunoonline.api.domain.aluno.*;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/alunos")
+@SecurityRequirement(name = "bearer-key")
 public class AlunoController {
 
     @Autowired
-    AlunoService alunoService;
+    private AlunoRepository repository;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void criarAluno(@RequestBody Aluno aluno){ // @RequestBody transforma o json em objeto java
-        alunoService.criarAluno(aluno);
+    @Transactional
+    public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroAluno dados,
+                                    UriComponentsBuilder uriBuilder) {
 
-   }
+        var aluno = new Aluno(dados);
+        repository.save(aluno);
 
-   @GetMapping
-   @ResponseStatus(HttpStatus.OK)
-   public List<Aluno> listarTodosAlunos(){
-        return alunoService.listarTodosAlunos();
-   }
+        var uri = uriBuilder.path("/alunos/{id}")
+                .buildAndExpand(aluno.getId())
+                .toUri();
 
-   @GetMapping("/{id}")
-   @ResponseStatus(HttpStatus.OK)
-    public Optional<Aluno> buscarAlunoPorId(@PathVariable Long id){
-        return alunoService.buscarAlunoPorId(id);
-         }
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletarAlunoPorId(@PathVariable Long id) {
-        alunoService.deletarAlunoPorId(id);
+        return ResponseEntity.created(uri).body(new DadosDetalhamentoAluno(aluno));
     }
 
-    @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void atualizarAlunoPorId(@PathVariable Long id, @RequestBody Aluno aluno){
-        alunoService.atualizarAlunoPorId(id, aluno);
+    @GetMapping
+    public ResponseEntity<List<DadosListagemAluno>> listar(
+            @PageableDefault(size = 10, sort = "nome") Pageable paginacao) {
+
+        var page = repository.findAll(paginacao);
+        return ResponseEntity.ok(
+                page.getContent().stream()
+                        .map(DadosListagemAluno::new)
+                        .toList());
+    }
+
+    @PutMapping
+    @Transactional
+    public ResponseEntity atualizar(@RequestBody @Valid DadosAtualizacaoAluno dados) {
+
+        var aluno = repository.getReferenceById(dados.id());
+        aluno.atualizarInformacoes(dados);
+
+        return ResponseEntity.ok(new DadosDetalhamentoAluno(aluno));
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity excluir(@PathVariable Long id) {
+
+        repository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity detalhar(@PathVariable Long id) {
+
+        var aluno = repository.getReferenceById(id);
+        return ResponseEntity.ok(new DadosDetalhamentoAluno(aluno));
     }
 }

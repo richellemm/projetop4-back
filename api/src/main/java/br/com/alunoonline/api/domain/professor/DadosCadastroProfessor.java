@@ -1,4 +1,4 @@
-package br.com.alunoonline.api.dtos.professor;
+package br.com.alunoonline.api.domain.professor;
 
 import jakarta.validation.constraints.NotBlank;
 

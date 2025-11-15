@@ -1,6 +1,5 @@
-package br.com.alunoonline.api.repository;
+package br.com.alunoonline.api.domain.disciplina;
 
-import br.com.alunoonline.api.model.Disciplina;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,7 +1,5 @@
-package br.com.alunoonline.api.model;
+package br.com.alunoonline.api.domain.professor;
 
-import br.com.alunoonline.api.dtos.professor.DadosAtualizacaoProfessor;
-import br.com.alunoonline.api.dtos.professor.DadosCadastroProfessor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

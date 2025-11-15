@@ -1,4 +1,4 @@
-package br.com.alunoonline.api.model;
+package br.com.alunoonline.api.domain.usuario;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

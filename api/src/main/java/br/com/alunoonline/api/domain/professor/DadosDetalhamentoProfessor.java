@@ -1,6 +1,4 @@
-package br.com.alunoonline.api.dtos.professor;
-
-import br.com.alunoonline.api.model.Professor;
+package br.com.alunoonline.api.domain.professor;
 
 public record DadosDetalhamentoProfessor(Long id, String nome, String cpf, String email) {
 

@@ -1,6 +1,5 @@
-package br.com.alunoonline.api.service;
+package br.com.alunoonline.api.domain.usuario;
 
-import br.com.alunoonline.api.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

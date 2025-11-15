@@ -1,4 +1,4 @@
-package br.com.alunoonline.api.infra.springdocs;
+package br.com.alunoonline.api.infra.springdoc;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

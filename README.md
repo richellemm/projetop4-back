@@ -6,7 +6,7 @@
 
 <hr>
 
-![](api/src/assets/banner_p4back.png
+![](api/src/assets/banner_p4back.png)
 
 <hr>
 

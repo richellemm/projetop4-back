@@ -39,33 +39,34 @@
 
 ### 🗂️ Estrutura do Projeto
 api/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── br/com/alunoonline/api/
-│   │   │       ├── controller/          
-│   │   │       ├── domain/              
-│   │   │       │   ├── aluno/
-│   │   │       │   ├── disciplina/
-│   │   │       │   ├── professor/
-│   │   │       │   └── usuario/
-│   │   │       ├── dtos/                 
-│   │   │       ├── enums/               
-│   │   │       ├── infra/               
-│   │   │       │   ├── exception/
-│   │   │       │   ├── security/
-│   │   │       │   └── springdoc/
+<br>
+├── src/<br>
+│   ├── main/<br>
+│   │   ├── java/<br>
+│   │   │   └── br/com/alunoonline/api/<br>
+│   │   │       ├── controller/      
+│   │   │       ├── domain/      
+│   │   │       │   ├── aluno/<br>
+│   │   │       │   ├── disciplina/<br>
+│   │   │       │   ├── professor/<br>
+│   │   │       │   └── usuario/<br>
+│   │   │       ├── dtos/               
+│   │   │       ├── enums/         
+│   │   │       ├── infra/           
+│   │   │       │   ├── exception/<br>
+│   │   │       │   ├── security/<br>
+│   │   │       │   └── springdoc/<br>
 │   │   │       └── service/             
 │   │   │
-│   │   ├── resources/
-│   │   │   ├── static/                   
-│   │   │   ├── templates/                
-│   │   │   ├── application.properties   
-│   │   │   └── application-prod.properties.properties  
+│   │   ├── resources/<br>
+│   │   │   ├── static/     <br>              
+│   │   │   ├── templates/     <br>           
+│   │   │   ├── application.properties   <br>
+│   │   │   └── application-prod.properties.properties  <br>
 │   │
-│   └── test/                           
+│   └── test/                    
 │
-└── target/
+└── target/<br>
 
 ### 🛠️ Configuração do Ambiente
 1. Instale o **Java 17** e o **Maven**.

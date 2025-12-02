@@ -1,6 +1,4 @@
-<hr>
-
-<div align=center>
+<div align="center">
 
 # Olá, sejam bem-vindos! 👋
 
@@ -20,8 +18,10 @@
     - [Estrutura do Projeto](#-estrutura-do-projeto)
     - [Configuração do Ambiente](#-configuração-do-ambiente)
     - [Autenticação](#-autenticação)
+    - [Documentação da API (Swagger)](#-documentação-da-api-swagger)
 
 ## 📚 Sobre
+
 - Projeto **P4 - Tecnologia para Back-end Avançado** baseado no sistema **Aluno Online (P3)**;
 - Adicionada **autenticação via JWT (Bearer Token)** para proteger os endpoints;
 - Sistema de cadastro de **Alunos, Professores e Disciplinas**.
@@ -29,6 +29,7 @@
 ## 📈 Detalhes Técnicos
 
 ### 📚 Tecnologias e Frameworks
+
 - **Java** (versão 22)
 - **Spring Boot** (versão 3.x)
 - **Maven** para gerenciamento de dependências
@@ -76,6 +77,12 @@ api/
 ## 🔐 Autenticação
 
 Todos os endpoints protegidos exigem um **Bearer Token** no cabeçalho da requisição.
+
+## 🔗 Documentação da API (Swagger)
+
+Acesse a documentação completa da API pelo Swagger:
+
+👉 **http://localhost:8080/swagger-ui/index.html**
 
 ### 📌 Exemplo de Login (gerar token)
 **POST** `/login`

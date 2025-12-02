@@ -5,7 +5,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository   //O que é o JpaRepository? "Java Persistence API" Spring Data JPA - interface - herda metodos
+@Repository
 public interface MatriculaAlunoRepository extends JpaRepository<MatriculaAluno, Long> {
+
+    // Buscar todas as matrículas de um aluno
     List<MatriculaAluno> findByAlunoId(Long alunoId);
+
+    // Buscar todas as matrículas de uma disciplina
+    List<MatriculaAluno> findByDisciplinaId(Long disciplinaId);
 }
+

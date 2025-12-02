@@ -3,6 +3,7 @@ package br.com.alunoonline.api.infra.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,16 +23,12 @@ public class SecurityConfigurations {
     private SecurityFilter securityFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)
-            throws Exception {
-
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
                 .authorizeHttpRequests(auth -> auth
-
-                        // 🔥 ROTAS LIBERADAS PARA O SWAGGER
+                        // Swagger liberado
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html",
@@ -40,26 +37,23 @@ public class SecurityConfigurations {
                                 "/webjars/**"
                         ).permitAll()
 
-                        // 🔥 LOGIN SEM TOKEN
+                        // Login e cadastro liberados
                         .requestMatchers("/login").permitAll()
-
-                        // 🔥 SEUS ENDPOINTS ABERTOS
                         .requestMatchers("/cadastros/**").permitAll()
-                        .requestMatchers("/alunos/**").permitAll()
 
-                        // 🔥 QUALQUER OUTRA ROTA EXIGE JWT
+                        // GET /alunos exige apenas autenticação
+                        .requestMatchers(HttpMethod.GET, "/alunos/**").authenticated()
+
+                        // Demais endpoints exigem autenticação
                         .anyRequest().authenticated()
                 )
-
-                // 🔥 REGISTRA O FILTRO JWT ANTES DO FILTRO PADRÃO
+                // Filtro JWT
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-
                 .build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
-            throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 

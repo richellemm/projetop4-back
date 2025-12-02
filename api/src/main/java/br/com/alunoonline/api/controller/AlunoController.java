@@ -1,31 +1,34 @@
 package br.com.alunoonline.api.controller;
 
 import br.com.alunoonline.api.domain.aluno.*;
+import br.com.alunoonline.api.domain.usuario.Usuario;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/alunos")
-@SecurityRequirement(name = "bearer-key")
+@SecurityRequirement(name = "bearerAuth") // Swagger
 public class AlunoController {
 
     @Autowired
     private AlunoRepository repository;
 
+    // Cadastrar aluno (precisa de autenticação)
     @PostMapping
     @Transactional
     public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroAluno dados,
-                                    UriComponentsBuilder uriBuilder) {
+                                    UriComponentsBuilder uriBuilder,
+                                    @AuthenticationPrincipal Usuario usuarioLogado) {
+
+        System.out.println("Usuário logado: " + usuarioLogado.getUsername());
 
         var aluno = new Aluno(dados);
         repository.save(aluno);
@@ -37,37 +40,54 @@ public class AlunoController {
         return ResponseEntity.created(uri).body(new DadosDetalhamentoAluno(aluno));
     }
 
+    // Listar todos os alunos (sem parâmetros)
     @GetMapping
-    public ResponseEntity<List<DadosListagemAluno>> listar(
-            @PageableDefault(size = 10, sort = "nome") Pageable paginacao) {
+    public ResponseEntity<List<DadosListagemAluno>> listar(@AuthenticationPrincipal Usuario usuarioLogado) {
 
-        var page = repository.findAll(paginacao);
-        return ResponseEntity.ok(
-                page.getContent().stream()
-                        .map(DadosListagemAluno::new)
-                        .toList());
+        System.out.println("Usuário logado: " + usuarioLogado.getUsername());
+
+        var alunos = repository.findAll();
+        var alunosDTO = alunos.stream()
+                .map(DadosListagemAluno::new)
+                .toList();
+
+        return ResponseEntity.ok(alunosDTO);
     }
 
-    @PutMapping
+    //Atualizar Aluno
+    @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity atualizar(@RequestBody @Valid DadosAtualizacaoAluno dados) {
+    public ResponseEntity<DadosDetalhamentoAluno> atualizar(
+            @PathVariable Long id,
+            @RequestBody @Valid DadosAtualizacaoAluno dados,
+            @AuthenticationPrincipal Usuario usuarioLogado) {
 
-        var aluno = repository.getReferenceById(dados.id());
+        System.out.println("Usuário logado: " + usuarioLogado.getUsername());
+
+        var aluno = repository.getReferenceById(id);
         aluno.atualizarInformacoes(dados);
 
         return ResponseEntity.ok(new DadosDetalhamentoAluno(aluno));
     }
 
+    // Excluir aluno
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity excluir(@PathVariable Long id) {
+    public ResponseEntity excluir(@PathVariable Long id,
+                                  @AuthenticationPrincipal Usuario usuarioLogado) {
+
+        System.out.println("Usuário logado: " + usuarioLogado.getUsername());
 
         repository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
+    // Detalhar aluno por id
     @GetMapping("/{id}")
-    public ResponseEntity detalhar(@PathVariable Long id) {
+    public ResponseEntity detalhar(@PathVariable Long id,
+                                   @AuthenticationPrincipal Usuario usuarioLogado) {
+
+        System.out.println("Usuário logado: " + usuarioLogado.getUsername());
 
         var aluno = repository.getReferenceById(id);
         return ResponseEntity.ok(new DadosDetalhamentoAluno(aluno));

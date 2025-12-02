@@ -12,7 +12,7 @@ public class AutenticacaoService implements UserDetailsService {
     @Autowired
     private UsuarioRepository repository;
 
-    @Override //detalhes do usuário: login, senha - roles. regras
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return repository.findByLogin(username);
     }

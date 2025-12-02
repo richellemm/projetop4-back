@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
-@RequestMapping("cadastros")
+@RequestMapping("/cadastros")
 public class UsuarioController {
 
     @Autowired

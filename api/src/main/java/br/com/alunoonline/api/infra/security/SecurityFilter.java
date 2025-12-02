@@ -22,15 +22,11 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Autowired
     private UsuarioRepository repository;
 
-    /**
-     * Define quais rotas NÃO passam pelo filtro JWT
-     */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-
         String path = request.getServletPath();
 
-        // 🔥 Swagger totalmente liberado
+        // Swagger liberado
         if (path.startsWith("/v3/api-docs")
                 || path.startsWith("/swagger-ui")
                 || path.equals("/swagger-ui.html")
@@ -39,15 +35,12 @@ public class SecurityFilter extends OncePerRequestFilter {
             return true;
         }
 
-        // 🔥 Rotas públicas do sistema
-        if (path.equals("/login")
-                || path.startsWith("/alunos")
-                || path.startsWith("/cadastros")) {
+        // Rotas públicas
+        if (path.equals("/login") || path.startsWith("/cadastros")) {
             return true;
         }
 
-        // ❗ Tudo que não for liberado será filtrado
-        return false;
+        return false; // demais rotas passam pelo filtro
     }
 
     @Override
@@ -56,10 +49,10 @@ public class SecurityFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        var tokenJWT = recuperarToken(request);
+        String tokenJWT = recuperarToken(request);
 
         if (tokenJWT != null) {
-            var subject = tokenService.getSubject(tokenJWT);
+            String subject = tokenService.getSubject(tokenJWT);
             var usuario = repository.findByLogin(subject);
 
             if (usuario != null) {
@@ -77,10 +70,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     private String recuperarToken(HttpServletRequest request) {
         var header = request.getHeader("Authorization");
-
-        if (header == null || !header.startsWith("Bearer "))
-            return null;
-
+        if (header == null || !header.startsWith("Bearer ")) return null;
         return header.substring(7);
     }
 }

@@ -14,7 +14,7 @@ import java.util.Optional;
 public class DisciplinaController {
 
     @Autowired
-    DisciplinaService disciplinaService;
+    private DisciplinaService disciplinaService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
